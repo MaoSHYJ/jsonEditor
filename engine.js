@@ -12,49 +12,48 @@ class Editor{
     this.numChilds = Object.keys(this.obj).length;
   }
 
-  printFirstChilds(nodeRef, obj = this.obj){
+  printChilds(nodeRef, obj = this.obj){
     if(!this.loaded){
       let child = null;
       let keys = [];
-      let number= null;
-      let text = null;
       let temp = null;
-      console.log("type",typeof obj)
+      let subkeys = [];
       if(typeof obj !== "object"){
         keys.push(obj);
-      }else{
+      }else if(typeof obj === "object" && obj){
         keys = Object.keys(obj);
       }
       keys.forEach( key => {
-        if(typeof obj[key] === "number" || typeof obj === "number"){
-          console.log("number");
-          number = obj[key] || obj;
+        if(typeof obj[key] === "object"){
+          if( Object.prototype.toString.call(obj[key]) === "[object Array]" ){
+            child = document.createElement("div");
+            obj[key].forEach(subKey =>{
+              let grandChild = document.createElement("div");
+              grandChild = this.printChilds(grandChild, subKey);
+              child.appendChild(grandChild);
+            });
+          }else{
+            child = document.createElement("div");
+            child.appendChild(document.createTextNode(key));
+            if(typeof obj[key] === "object" && obj[key]){
+              subkeys = Object.keys(obj[key]);
+            }
+            subkeys.forEach(subKey =>{
+              temp = document.createElement("div");
+              temp.appendChild(document.createTextNode(subKey));
+              temp = this.printChilds(temp, obj[key][subKey]);
+              child.appendChild(temp);
+            });
+            child.setAttribute("data-type",typeof obj[key]);
+          }
+        }else{
+          temp = obj[key] || obj;
           child = document.createElement("span");
           child.setAttribute("contenteditable",true);
-          child.appendChild(document.createTextNode(number));
-          debugger;
-        }else if(typeof obj[key] === "string" || typeof obj === "string"){
-          text = obj[key] || obj;
-          child = document.createElement("span");
-          child.setAttribute("contenteditable",true);
-          child.appendChild(document.createTextNode(text));
-        }else if( Object.prototype.toString.call(obj[key]) === "[object Array]" ){
-          child = document.createElement("div");
-          child.setAttribute("data-type","object");
-          obj[key].forEach(subKey =>{
-            let grandChild = document.createElement("div");
-            grandChild = this.printFirstChilds(grandChild, subKey);
-            child.appendChild(grandChild);
-          });
-        }else if( typeof obj[key] === "object" ){
-          child = document.createElement("div");
-          child.appendChild(document.createTextNode(key));
-          child.setAttribute("data-type","object");
-          child.setAttribute("contenteditable",true);
-          temp = this.printFirstChilds(child, obj[key]);
-          child.appendChild(temp);
+          child.appendChild(document.createTextNode(key+": "+temp));
         }
         nodeRef.appendChild(child);
+        nodeRef.appendChild(document.createElement("br"));
       })
       return nodeRef;
     }
@@ -69,13 +68,16 @@ const editor = new Editor();
 
 function handleFileSelect()
 {
+  console.time("loadFIle");
+
   input = document.querySelector('#file_name');
   file = input.files[0];
   fr = new FileReader();
   fr.readAsText(file);
   fr.onload = function() {
     editor.setFile(fr.result);
-    editor.printFirstChilds(document.querySelector('#list'));
+    editor.printChilds(document.querySelector('#list'));
+    console.timeEnd("loadFIle");
   }
 }
 
