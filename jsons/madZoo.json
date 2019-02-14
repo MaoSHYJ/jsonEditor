@@ -1,7 +1,23 @@
 {
+  "fish":[
+    "bull shark",
+    "grey shark",
+    "Gigantic Mero"
+  ],
   "mammal":[
     "suricat",
-    "Bengal Tiger",
+    [
+      "Bengal Tiger",
+      "Bali Tiger",
+      "Caspian Tiger",
+      "Javan Tigers",
+      "Tiger Hibrids",
+      [
+        "Black Tiger",
+        "White Tiger",
+        "Golden Tiger"
+      ]
+    ],
     "Orangutan",
     "Tibet Bear",
     "Baribal Bear",
@@ -15,5 +31,27 @@
     "Amazonic Tapir",
     "Malayan Tapir",
     "White Rinoceront"
-  ]
+  ],
+  "people_visitted":{
+    "winter":{
+      "people":5460,
+      "money_spent":654419.25,
+      "social_media_impact": 6504
+    },
+    "spring":{
+      "people":98413,
+      "money_spent":31548541.25,
+      "social_media_impact": 3203213
+    },
+    "summer":{
+      "people":261941,
+      "money_spent":514941.25,
+      "social_media_impact": 262111
+    },
+    "autumn":{
+      "people":164779,
+      "money_spent":3215479.25,
+      "social_media_impact": 32154
+    }
+  }
 }
